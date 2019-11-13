@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
-    public class DishController : Controller
+    public class DishController : ControllerBase
     {
         private readonly StorageManager _storage;
 
