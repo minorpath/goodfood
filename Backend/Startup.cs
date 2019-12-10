@@ -1,6 +1,7 @@
 using Backend;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,6 +36,10 @@ namespace Backend
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
 
@@ -45,6 +50,15 @@ namespace Backend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+
+            // app.UseStaticFiles();
+
+            app.Run(async (context) =>
+            {
+                // Default handler for requests not handled elsewhere
+                await context.Response.WriteAsync("Could Not Find Anything");
             });
         }
     }
