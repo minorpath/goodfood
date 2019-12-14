@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Backend.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,13 @@ namespace Backend.Controllers
     public class ImageUploadController : ControllerBase
     {
         public static IWebHostEnvironment _environment { get; set; }
-        public ImageUploadController(IWebHostEnvironment environment)
+
+        private readonly IFileStorage _fileStorage;
+
+        public ImageUploadController(IWebHostEnvironment environment, IFileStorage fileStorage)
         {
             _environment = environment;
+            _fileStorage = fileStorage;
         }
 
         public class FileUploadModel
@@ -29,14 +34,11 @@ namespace Backend.Controllers
             {
                 if (objFile.file.Length > 0)
                 {
-                    if (!Directory.Exists(_environment.WebRootPath + "\\Upload\\"))
-                        Directory.CreateDirectory(_environment.WebRootPath + "\\Upload\\");
-
-                    using (FileStream fileStream = System.IO.File.Create(_environment.WebRootPath + "\\Upload\\" + objFile.file.FileName))
+                    using (var memStream = new System.IO.MemoryStream())
                     {
-                        objFile.file.CopyTo(fileStream);
-                        fileStream.Flush();
-                        return "\\Upload\\" + objFile.file.FileName;
+                        await objFile.file.CopyToAsync(memStream);
+                        await memStream.FlushAsync();
+                        return await _fileStorage.Add(objFile.file.FileName, memStream);
                     }
                 } 
                 else
