@@ -41,8 +41,7 @@ namespace Backend
 
         public async Task DeleteAsync(DishEntity dish)
         {
-            if (dish.RowKey == null)
-                throw new ArgumentNullException(nameof(dish));  // TODO: Use c# 10 callerargument bla bla.
+            ArgumentNullException.ThrowIfNull(dish.RowKey);
             var partitionKey = "lye";
             var response = await _dishTable.DeleteEntityAsync(partitionKey, dish.RowKey);
             _logger.LogInformation("Deleted dish with RowKey {RowKey} - Status: {HttpStatus}", dish.RowKey, response.Status);

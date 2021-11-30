@@ -37,5 +37,16 @@ namespace Backend.Controllers
             var dishEntity = dish.ToEntity();
             await _storage.InsertAsync(dishEntity);
         }
+
+
+        [HttpDelete]
+        [Route("{id}", Name = "DeleteDishById")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var dishEntity = await _storage.GetAsync(id);
+            if( dishEntity == null) return NotFound();
+            await _storage.DeleteAsync(dishEntity);
+            return Ok();
+        }
     }
 }
