@@ -47,35 +47,22 @@ namespace Backend
             _logger.LogInformation("Deleted dish with RowKey {RowKey} - Status: {HttpStatus}", dish.RowKey, response.Status);
         }
 
-        //public async Task<IEnumerable<DishEntity>> SearchAsync(string search)
-        //{
-        //    var tableClient = _storageAccount.CreateCloudTableClient();
-        //    var table = tableClient.GetTableReference("dish");
-        //    // Construct the query operation for all dish entities where PartitionKey="<search>".
-        //    var query = new TableQuery<DishEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, search));
-
-        //    var entities = new List<DishEntity>();
-
-        //    // Initialize the continuation token to null to start from the beginning of the table.
-        //    TableContinuationToken continuationToken = null;
-
-        //    do
-        //    {
-        //        // Retrieve a segment (up to 1,000 entities).
-        //        TableQuerySegment<DishEntity> tableQueryResult =
-        //            await table.ExecuteQuerySegmentedAsync(query, continuationToken);
-
-        //        // Assign the new continuation token to tell the service where to
-        //        // continue on the next iteration (or null if it has reached the end).
-        //        continuationToken = tableQueryResult.ContinuationToken;
-
-        //        entities.AddRange(tableQueryResult.Results);
-
-        //        // Loop until a null continuation token is received, indicating the end of the table.
-        //    } while (continuationToken != null);
-
-        //    return entities;
-        //}
+        public async Task<IEnumerable<DishEntity>> SearchAsync(string tagSearch)
+        {
+            var sw = Stopwatch.StartNew();
+            var partitionKey = "lye";
+            var queryResultsFilter = _dishTable.QueryAsync<DishEntity>(filter: $"Tags eq '{tagSearch}'");
+            var entities = new List<DishEntity>();
+            var pageCount = 0;
+            await foreach (var page in queryResultsFilter.AsPages())
+            {
+                pageCount++;
+                foreach (DishEntity qEntity in page.Values)
+                    entities.Add(qEntity);
+            }
+            sw.Stop();
+            return entities;
+        }
 
         public async Task<IEnumerable<DishEntity>> GetAllAsync()
         {

@@ -15,6 +15,14 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
+        [Route("search", Name = "SearchDishesByTag")]
+        public async Task<IEnumerable<Dish>> SearchByTag([FromQuery]string tags)
+        {
+            var entities = await _storage.SearchAsync(tags);
+            return entities.Select(e => e.ToDto());
+        }
+
+        [HttpGet]
         [Route("", Name = "GetAllDishes")]
         public async Task<IEnumerable<Dish>> Get()
         {
