@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Backend.Data;
+﻿using Backend.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
@@ -18,17 +14,24 @@ namespace Backend.Controllers
             _storage = storage;
         }
 
-        // GET api/dish
         [HttpGet]
+        [Route("", Name = "GetAllDishes")]
         public async Task<IEnumerable<Dish>> Get()
         {
             var entities = await _storage.GetAllAsync();
             return entities.Select(e => e.ToDto());
         }
 
+        [HttpGet]
+        [Route("{id}", Name = "GetDishById")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var entity = await _storage.GetAsync(id);
+            return entity != null ? Ok(entity.ToDto()) : NotFound();
+        }
 
-        // POST api/values
         [HttpPost]
+        [Route("", Name = "PostNewDish")]
         public async Task Post([FromBody]Dish dish)
         {
             var dishEntity = dish.ToEntity();

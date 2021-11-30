@@ -1,49 +1,74 @@
-﻿using Microsoft.WindowsAzure.Storage.Blob;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Backend.Models;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Options;
 
+// https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-dotnet
 
 namespace Backend.Data
 {
     public class BlobFileStorage : IFileStorage
     {
-        private readonly CloudBlobContainer _blobContainer;
+        private readonly BlobContainerClient _blobContainer;
+        private readonly StorageOptions _options;
+        private readonly ILogger<BlobFileStorage> _logger;
 
-        public BlobFileStorage(CloudBlobContainer blobContainer)
+        public BlobFileStorage(IOptions<StorageOptions> options, ILogger<BlobFileStorage> logger)
         {
-            _blobContainer = blobContainer;
+            _options = options.Value;
+            _logger = logger;
+            var blobServiceClient = new BlobServiceClient(_options.StorageAccount);
+            _blobContainer = blobServiceClient.GetBlobContainerClient("img");
+        }
+
+
+        public async Task<Stream?> GetAsync(string fileName)
+        {
+            var blob = _blobContainer.GetBlobClient(fileName);
+            if (await blob.ExistsAsync())
+            {
+                _logger.LogInformation("Download streaming of file {FileName}", fileName);
+                var streaming = await blob.DownloadStreamingAsync();
+                return streaming.Value.Content;
+            }
+            return null;
         }
 
         public async Task<string> Add(string fileName, string filePath)
         {
-            var blobRef = await GetBlobReference(fileName);
-            await blobRef.UploadFromFileAsync(filePath);
-            return blobRef.Uri.AbsoluteUri;
+            var blob = await GetBlobClient(fileName);
+            await blob.UploadAsync(filePath, new BlobHttpHeaders { ContentType = GetContentType(fileName) });
+            _logger.LogInformation("Uploaded new file {BlobUri}", blob.Uri.AbsoluteUri);
+            return blob.Uri.AbsoluteUri;
         }
 
-        public async Task<string> Add(string fileName, MemoryStream fileData)
+        public async Task<string> Add(string fileName, MemoryStream content)
         {
-            fileData.Position = 0;
-            var blobRef = await GetBlobReference(fileName);
-            await blobRef.UploadFromStreamAsync(fileData);
-            return blobRef.Uri.AbsoluteUri;
+            content.Position = 0;
+            var blob = await GetBlobClient(fileName);
+            await blob.UploadAsync(content, new BlobHttpHeaders { ContentType = GetContentType(fileName) });
+            _logger.LogInformation("Uploaded new file {BlobUri}", blob.Uri.AbsoluteUri);
+            return blob.Uri.AbsoluteUri;
         }
 
-        private async Task<CloudBlockBlob> GetBlobReference(string fileName)
+        private async Task<BlobClient> GetBlobClient(string fileName)
         {
-            var blobReference = _blobContainer.GetBlockBlobReference(fileName);
-            var exists = await blobReference.ExistsAsync();
+            // Get a reference to a blob
+            var blob = _blobContainer.GetBlobClient(fileName);
+            var exists = await blob.ExistsAsync();
             if (exists)
                 throw new Exception("Blob already exists: " + fileName);
-
-            var ext = Path.GetExtension(fileName).ToLowerInvariant();
-            if (ext.EndsWith("jpg") || ext.EndsWith("jpeg"))
-                blobReference.Properties.ContentType = "image/jpeg";
-            else if(ext.EndsWith("png"))
-                blobReference.Properties.ContentType = "image/png";
-
-            return blobReference;
+            return blob;
         }
+
+        public string? GetContentType(string fileName)
+        {
+            if (new FileExtensionContentTypeProvider().TryGetContentType(fileName, out var contentType))
+                return contentType;
+            else
+                return null;
+        }
+
     }
 }
