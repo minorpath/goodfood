@@ -29,8 +29,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
-
 app.MapGet("/", (IWebHostEnvironment env) => {
     var aspNetCoreAssembly = typeof(Microsoft.AspNetCore.Builder.WebApplication).Assembly;
     var fileVersionInfo = FileVersionInfo.GetVersionInfo(aspNetCoreAssembly.Location);
@@ -41,3 +39,5 @@ app.MapGet("/", (IWebHostEnvironment env) => {
             $"Startup time (UTC): {startTime:o}" + Environment.NewLine +
             $"Environment name: {env.EnvironmentName}" + Environment.NewLine;
 }).WithName("RootEndpoint");
+
+app.Run();
