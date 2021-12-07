@@ -12,6 +12,7 @@ namespace HeinjoFood.Api
         }
 
         public DishEntity() { }
+        public string? Title { get; set; }
         public string? Tags { get; set; }
         public string? ImageUrl { get; set; }
         public string? Urls { get; set; }

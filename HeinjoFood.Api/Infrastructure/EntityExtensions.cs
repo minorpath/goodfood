@@ -7,6 +7,7 @@ namespace HeinjoFood.Api.Data
 
         public static DishEntity ToEntity(this Dish dish) => new("lye", null)
         {
+            Title = dish.Title,
             Description = dish.Description,
             Comment = dish.Comment,
             ImageUrl = dish.ImageUrl,
@@ -17,6 +18,7 @@ namespace HeinjoFood.Api.Data
         public static Dish ToDto(this DishEntity dish) => new()
         {
             Id = dish.RowKey,
+            Title = dish.Title,
             Description = dish.Description,
             Comment = dish.Comment,
             ImageUrl = dish.ImageUrl,
