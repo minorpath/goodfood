@@ -1,7 +1,7 @@
 using Azure;
 using Azure.Data.Tables;
 
-namespace Backend
+namespace HeinjoFood.Api
 {
     public class DishEntity : ITableEntity
     {

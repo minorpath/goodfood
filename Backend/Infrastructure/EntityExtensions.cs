@@ -1,6 +1,6 @@
 using System;
 
-namespace Backend.Data
+namespace HeinjoFood.Api.Data
 {
     public static class EntityExtensions
     {

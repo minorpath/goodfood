@@ -1,6 +1,6 @@
-using Backend;
-using Backend.Data;
-using Backend.Models;
+using HeinjoFood.Api;
+using HeinjoFood.Api.Data;
+using HeinjoFood.Api.Models;
 using System.Diagnostics;
 
 var startTime = DateTime.UtcNow;

@@ -1,7 +1,7 @@
-﻿using Backend.Data;
+﻿using HeinjoFood.Api.Data;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Backend.Controllers
+namespace HeinjoFood.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -1,6 +1,6 @@
-using Backend.Data;
+using HeinjoFood.Api.Data;
 
-namespace Backend
+namespace HeinjoFood.Api
 {
     public static class StorageServiceCollectionExtensions
     {

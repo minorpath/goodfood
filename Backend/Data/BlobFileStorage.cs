@@ -1,12 +1,12 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Backend.Models;
+using HeinjoFood.Api.Models;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Options;
 
 // https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-dotnet
 
-namespace Backend.Data
+namespace HeinjoFood.Api.Data
 {
     public class BlobFileStorage : IFileStorage
     {

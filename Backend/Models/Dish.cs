@@ -1,4 +1,4 @@
-namespace Backend
+namespace HeinjoFood.Api
 {
     public class Dish
     {

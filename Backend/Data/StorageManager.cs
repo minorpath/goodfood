@@ -1,5 +1,5 @@
 using Azure.Data.Tables;
-using Backend.Models;
+using HeinjoFood.Api.Models;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 // https://elcamino.cloud/articles/2020-03-30-azure-storage-blobs-net-sdk-v12-upgrade-guide-and-tips.html
 
-namespace Backend
+namespace HeinjoFood.Api
 {
     public class StorageManager
     {

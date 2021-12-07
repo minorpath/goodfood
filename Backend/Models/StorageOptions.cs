@@ -1,4 +1,4 @@
-﻿namespace Backend.Models
+﻿namespace HeinjoFood.Api.Models
 {
     public class StorageOptions
     {

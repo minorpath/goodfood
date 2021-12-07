@@ -1,4 +1,4 @@
-﻿namespace Backend.Data
+﻿namespace HeinjoFood.Api.Data
 {
     public interface IFileStorage
     {
