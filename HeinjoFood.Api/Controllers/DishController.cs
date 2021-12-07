@@ -32,18 +32,25 @@ namespace HeinjoFood.Api.Controllers
 
         [HttpGet]
         [Route("{id}", Name = "GetDishById")]
+        [ProducesResponseType(typeof(Dish), 200)]
         public async Task<IActionResult> Get(string id)
         {
             var entity = await _storage.GetAsync(id);
             return entity != null ? Ok(entity.ToDto()) : NotFound();
         }
 
+        /// <summary>
+        /// Adds new Dish
+        /// </summary>
         [HttpPost]
         [Route("", Name = "PostNewDish")]
-        public async Task Post([FromBody]Dish dish)
+        [ProducesResponseType(typeof(Dish), 201)]
+        public async Task<IActionResult> Post([FromBody]Dish dish)
         {
             var dishEntity = dish.ToEntity();
-            await _storage.InsertAsync(dishEntity);
+            var createdEntity = await _storage.InsertAsync(dishEntity);
+            var createdDto = createdEntity.ToDto();
+            return CreatedAtRoute("GetDishById", new { id = createdDto.Id }, createdDto);
         }
 
 

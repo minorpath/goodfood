@@ -28,7 +28,7 @@ namespace HeinjoFood.Api
             _dishTable.CreateIfNotExists();
         }
 
-        public async Task InsertAsync(DishEntity dish)
+        public async Task<DishEntity> InsertAsync(DishEntity dish)
         {
             if (dish.PartitionKey == null)
                 dish.PartitionKey = "lye";
@@ -37,6 +37,8 @@ namespace HeinjoFood.Api
 
             var response = await _dishTable.AddEntityAsync(dish);
             _logger.LogInformation("Inserted new dish with RowKey {RowKey} - Status: {HttpStatus}", dish.RowKey, response.Status);
+            var entity = await _dishTable.GetEntityAsync<DishEntity>(dish.PartitionKey, dish.RowKey);
+            return entity;
         }
 
         public async Task DeleteAsync(DishEntity dish)
