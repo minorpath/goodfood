@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddRouting(configureOptions => configureOptions.LowercaseUrls = true);
 builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection("Storage"));   
 builder.Services.AddSingleton<StorageManager>();
 builder.Services.AddSingleton<IFileStorage, BlobFileStorage>();
