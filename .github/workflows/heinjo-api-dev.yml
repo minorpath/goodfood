@@ -13,10 +13,10 @@ on:
   
 env:
   AZURE_WEBAPP_NAME: heinjo-api-dev
-  AZURE_WEBAPP_PACKAGE_PATH: Backend\publish
+  AZURE_WEBAPP_PACKAGE_PATH: HeinjoFood.Api\publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: Backend
+  WORKING_DIRECTORY: HeinjoFood.Api
 jobs:
   build:
     runs-on: windows-latest
