@@ -2,13 +2,20 @@ using HeinjoFood.Api;
 using HeinjoFood.Api.Data;
 using HeinjoFood.Api.Models;
 using System.Diagnostics;
+using System.Reflection;
 
 var startTime = DateTime.UtcNow;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(setupAction =>
+{
+    var basePath = AppContext.BaseDirectory;
+    var fileName = Assembly.GetExecutingAssembly().GetName().Name + ".xml";
+    var filePath = Path.Combine(basePath, fileName);
+    setupAction.IncludeXmlComments(filePath);
+});
 builder.Services.AddRouting(configureOptions => configureOptions.LowercaseUrls = true);
 builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection("Storage"));   
 builder.Services.AddSingleton<StorageManager>();
